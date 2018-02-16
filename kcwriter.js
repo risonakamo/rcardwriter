@@ -57,37 +57,73 @@ function readXls(datafile,name)
             header:1
         });
 
-        var formatdata=[];
-        var rubys;
-        var formatrubys;
-        for (var x=0,l=jsondata.length;x<l;x++)
-        {
-            if (jsondata[x].length>3)
-            {
-                rubys=jsondata[x].slice(3);
-                formatrubys=[];
-                for (var y=0,yl=rubys.length;y<yl;y+=2)
-                {
-                    formatrubys.push([rubys[y],rubys[y+1]]);
-                }
+        console.log(jsondata);
 
-                formatdata.push({
-                    maindata:jsondata[x].slice(0,3),
-                    rubys:formatrubys
-                });
-            }
-
-            else
-            {
-                formatdata.push({maindata:jsondata[x]});
-            }
-        }
-
-        attachData(formatdata,name);
+        attachData(parseRCards(jsondata),name);
         document.querySelector(".zones").classList.add("loaded");
     };
 
     f.readAsBinaryString(datafile);
+}
+
+//process data into fcardsk json
+function parsefCardsK(jsondata)
+{
+    var formatdata=[];
+    var rubys;
+    var formatrubys;
+    for (var x=0,l=jsondata.length;x<l;x++)
+    {
+        if (jsondata[x].length>3)
+        {
+            rubys=jsondata[x].slice(3);
+            formatrubys=[];
+            for (var y=0,yl=rubys.length;y<yl;y+=2)
+            {
+                formatrubys.push([rubys[y],rubys[y+1]]);
+            }
+
+            formatdata.push({
+                maindata:jsondata[x].slice(0,3),
+                rubys:formatrubys
+            });
+        }
+
+        else
+        {
+            formatdata.push({maindata:jsondata[x]});
+        }
+    }
+
+    return formatdata;
+}
+
+function parseRCards(data)
+{
+    var res=[];
+    var currentData;
+    var current;
+    for (var x=0,l=data.length;x<l;x++)
+    {
+        currentData=data[x];
+
+        current={
+            name:currentData[0],
+            place:currentData[1],
+            time:currentData[2],
+            material:currentData[3],
+            img:currentData[4]
+        };
+
+        if (currentData.length>5)
+        {
+            current.note=currentData[5];
+        }
+
+        res.push(current);
+    }
+
+    return res;
 }
 
 //prepare json download button for downloading
