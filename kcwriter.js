@@ -2,11 +2,14 @@ window.onload=main;
 
 var _jsonlink;
 
+var _parseModeSettings={};
+
 function main()
 {
     _jsonlink=document.querySelector(".new-text");
 
     setupDropZone();
+    selectParseMode(0);
 }
 
 //initialise drop zone related things
@@ -59,7 +62,7 @@ function readXls(datafile,name)
 
         console.log(jsondata);
 
-        attachData(parseRCards(jsondata),name);
+        attachData(_parseModeSettings.parseFunction(jsondata),name);
         document.querySelector(".zones").classList.add("loaded");
     };
 
@@ -126,9 +129,29 @@ function parseRCards(data)
     return res;
 }
 
+function selectParseMode(mode)
+{
+    switch (mode)
+    {
+        //fcardsk
+        case 0:
+        _parseModeSettings.dataName="kcards";
+        _parseModeSettings.parseFunction=parsefCardsK;
+        break;
+
+        //rcards
+        case 1:
+        _parseModeSettings.dataName="data";
+        _parseModeSettings.parseFunction=parseRCards;
+        break;
+    }
+}
+
 //prepare json download button for downloading
 function attachData(data,name)
 {
-    _jsonlink.href=`data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify({kcards:data}))}`;
+    var resData={};
+    resData[_parseModeSettings.dataName]=data;
+    _jsonlink.href=`data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(resData))}`;
     _jsonlink.download=`${name}.json`;
 }
