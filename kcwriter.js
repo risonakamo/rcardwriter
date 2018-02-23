@@ -60,8 +60,6 @@ function readXls(datafile,name)
             header:1
         });
 
-        console.log(jsondata);
-
         attachData(_parseModeSettings.parseFunction(jsondata),name);
         document.querySelector(".zones").classList.add("loaded");
     };
@@ -129,20 +127,51 @@ function parseRCards(data)
     return res;
 }
 
+function parsefCards2(data)
+{
+    var res=[];
+    var currCard;
+    for (var x=0,l=data.length;x<l;x++)
+    {
+        currCard=[data[x][0],data[x][1]];
+
+        if (data[x].length>2)
+        {
+            currCard.push(data[x].slice(2))
+        }
+
+        res.push(currCard);
+    }
+
+    return res;
+}
+
+//parse functions should return a single object or array.
+//this object will be assigned to an object with 1 field,
+//the field is set with parsemodesettings.dataName
 function selectParseMode(mode)
 {
     switch (mode)
     {
         //fcardsk
         case 0:
+        console.log("kcard mode");
         _parseModeSettings.dataName="kcards";
         _parseModeSettings.parseFunction=parsefCardsK;
         break;
 
         //rcards
         case 1:
+        console.log("rcard mode");
         _parseModeSettings.dataName="data";
         _parseModeSettings.parseFunction=parseRCards;
+        break;
+
+        //fcards2
+        case 2:
+        console.log("fcard2 mode");
+        _parseModeSettings.dataName="boxes";
+        _parseModeSettings.parseFunction=parsefCards2;
         break;
     }
 }
