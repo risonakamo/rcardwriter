@@ -8,6 +8,11 @@ function main()
 {
     _jsonlink=document.querySelector(".new-text");
 
+    console.log("selectParseMode(mode)");
+    console.log("0: fcardsk");
+    console.log("1: rmcards");
+    console.log("2: fcards2");
+
     setupDropZone();
     selectParseMode(0);
 }
@@ -99,11 +104,25 @@ function parsefCardsK(jsondata)
     return formatdata;
 }
 
+//set _parseModeSettings.beginId to start assigning ids at a different value
+//useful for appending to already generated json
 function parseRCards(data)
 {
     var res=[];
     var currentData;
     var current;
+    var id;
+
+    if (_parseModeSettings.beginId)
+    {
+        id=_parseModeSettings.beginId;
+    }
+
+    else
+    {
+        id=0;
+    }
+
     for (var x=0,l=data.length;x<l;x++)
     {
         currentData=data[x];
@@ -113,7 +132,8 @@ function parseRCards(data)
             place:currentData[1],
             time:currentData[2],
             material:currentData[3],
-            img:currentData[4]
+            img:currentData[4],
+            id:id
         };
 
         if (currentData.length>5)
@@ -122,6 +142,7 @@ function parseRCards(data)
         }
 
         res.push(current);
+        id++;
     }
 
     return res;
